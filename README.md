@@ -1,6 +1,6 @@
 # PocketnestSDK
 
-[![Latest Release](https://img.shields.io/github/v/release/pocketnest/PocketnestSDK-iOS?sort=semver)](https://github.com/pocketnest/PocketnestSDK-iOS/releases)
+[![Latest Release](https://img.shields.io/github/v/release/pocketnest/PocketnestSDK-iOS)](https://github.com/pocketnest/PocketnestSDK-iOS/releases)
 
 iOS SDK for Pocketnest.
 
