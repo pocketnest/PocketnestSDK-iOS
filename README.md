@@ -41,16 +41,16 @@ https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for
 import PocketnestSDK
 
 let url = "YOUR_SSO_URL" // Example: https://mywebsite.com/sso provided by Pocketnest prod or preprod
-
 let redirectUri = "YOUR_REDIRECT_URI" // This value must exactly match the scheme registered in your Xcode project's URL Types (including case sensitivity) to avoid integration issues
 
-let webView = PocketnestSDK.webView(url: url, redirectUri: redirectUri, onSuccess: { data in
+PocketnestSDK.webView(url: url, redirectUri: redirectUri, onSuccess: { data in
     // Handle success SDK started
 }, onExit: {
     // Handle exit SDK
 })
 
 ```
+Function `webView` returns `UIView` that you can present in your app however you want.
 
 You can check the example project in the `Example` folder.
  
