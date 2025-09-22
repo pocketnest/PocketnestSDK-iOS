@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct PocketnestSDK {
-    @MainActor public static func launch(
+    @MainActor public static func webView(
         url: String,
         redirectUri: String? = nil,
         onSuccess: @escaping ([String: Any]) -> Void,

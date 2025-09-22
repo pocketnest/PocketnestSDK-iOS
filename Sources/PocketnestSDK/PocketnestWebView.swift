@@ -42,7 +42,7 @@ struct PocketnestWebView: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: config)
         context.coordinator.webView = webView
 
-        if let url = URL(string: url) {
+        if let url = URL(string: url + "?redirectUri=" + (redirectUri ?? "")) {
             webView.load(URLRequest(url: url))
         }
 
