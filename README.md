@@ -1,5 +1,7 @@
 # PocketnestSDK
 
+[![Latest Release](https://img.shields.io/github/v/release/pocketnest/PocketnestSDK-iOS?sort=semver)](https://github.com/pocketnest/PocketnestSDK-iOS/releases)
+
 iOS SDK for Pocketnest.
 
 ## Installation
@@ -19,7 +21,7 @@ dependencies: [
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate PocketnestSDK into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'PocketnestSDK'
+pod 'PocketnestSDK', :git => 'https://github.com/pocketnest/PocketnestSDK-iOS.git', :tag => '1.0.1'
 ```
 
 ## Usage
