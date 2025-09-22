@@ -9,7 +9,7 @@ struct PocketnestWebView: UIViewRepresentable {
     let onExit: () -> Void
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(redirectUri: redirectUri, onSuccess: onSuccess, onExit: onExit)
+        Coordinator(baseURL: url, redirectUri: redirectUri, onSuccess: onSuccess, onExit: onExit)
     }
 
     func makeUIView(context: Context) -> WKWebView {
@@ -40,26 +40,39 @@ struct PocketnestWebView: UIViewRepresentable {
         config.userContentController = contentController
 
         let webView = WKWebView(frame: .zero, configuration: config)
+        webView.navigationDelegate = context.coordinator
+        webView.uiDelegate = context.coordinator
         context.coordinator.webView = webView
 
-        if let url = URL(string: url + "?redirectUri=" + (redirectUri ?? "")) {
-            webView.load(URLRequest(url: url))
+        if var components = URLComponents(string: url) {
+            var queryItems = components.queryItems ?? []
+            queryItems.append(URLQueryItem(name: "redirect_uri", value: redirectUri))
+            components.queryItems = queryItems
+            
+            if let finalURL = components.url {
+                webView.load(URLRequest(url: finalURL))
+            }
         }
 
         return webView
     }
 
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        uiView.navigationDelegate = context.coordinator
+        uiView.uiDelegate = context.coordinator
+    }
 
     // MARK: - Coordinator
-    class Coordinator: NSObject, WKScriptMessageHandler, ASWebAuthenticationPresentationContextProviding {
+    class Coordinator: NSObject, WKScriptMessageHandler, ASWebAuthenticationPresentationContextProviding, WKNavigationDelegate, WKUIDelegate {
         weak var webView: WKWebView?
         let redirectUri: String?
+        let baseURL: String!
         let onSuccess: ([String: Any]) -> Void
         let onExit: () -> Void
         var authSession: ASWebAuthenticationSession?
 
-        init(redirectUri: String?, onSuccess: @escaping ([String: Any]) -> Void, onExit: @escaping () -> Void) {
+        init(baseURL:String, redirectUri: String?, onSuccess: @escaping ([String: Any]) -> Void, onExit: @escaping () -> Void) {
+            self.baseURL = baseURL;
             self.redirectUri = redirectUri
             self.onSuccess = onSuccess
             self.onExit = onExit
@@ -150,5 +163,59 @@ struct PocketnestWebView: UIViewRepresentable {
         func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
             webView?.window ?? ASPresentationAnchor()
         }
+        
+        
+ 
+        private lazy var baseHostAndScheme: (host: String?, scheme: String?) = {
+            let comps = URLComponents(string: baseURL)
+            return (comps?.host, comps?.scheme)
+        }()
+        
+        private func isExternal(_ targetURL: URL, relativeTo webView: WKWebView) -> Bool {
+            let (baseHost, baseScheme) = baseHostAndScheme
+            let targetHost = targetURL.host
+            let targetScheme = targetURL.scheme
+
+            let hostDiffers = (baseHost != nil && targetHost != nil &&
+                               baseHost!.caseInsensitiveCompare(targetHost!) != .orderedSame)
+            let schemeDiffers = (baseScheme != nil && targetScheme != nil &&
+                                 baseScheme!.caseInsensitiveCompare(targetScheme!) != .orderedSame)
+            return hostDiffers || schemeDiffers
+        }
+
+        func webView(_ webView: WKWebView,
+                     decidePolicyFor navigationResponse: WKNavigationResponse,
+                     decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+            let url = navigationResponse.response.url ?? (navigationResponse.response as? HTTPURLResponse)?.url
+            if let url, isExternal(url, relativeTo: webView) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                decisionHandler(.cancel)
+                return
+            }
+            decisionHandler(.allow)
+        }
+        
+        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+          
+        }
+       
+        func webView(_ webView: WKWebView,
+                     createWebViewWith configuration: WKWebViewConfiguration,
+                     for navigationAction: WKNavigationAction,
+                     windowFeatures: WKWindowFeatures) -> WKWebView? {
+            guard let url = navigationAction.request.url else { return nil }
+
+            if isExternal(url, relativeTo: webView) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                return nil // don't load inside the webview
+            }
+
+            // internal link opened in a new window → load in same webview
+            if navigationAction.targetFrame == nil {
+                webView.load(navigationAction.request)
+            }
+            return nil
+        }
+
     }
 }

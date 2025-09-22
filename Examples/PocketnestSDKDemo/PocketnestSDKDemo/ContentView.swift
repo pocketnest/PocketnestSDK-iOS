@@ -36,7 +36,6 @@ struct ContentView: View {
                             } else {
                                 resultText = "Success: \(payload)"
                             }
-                            showingSDK = false
                         },
                         onExit: {
                             resultText = "User exited"
