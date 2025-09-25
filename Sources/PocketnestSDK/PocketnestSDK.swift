@@ -1,6 +1,9 @@
 import SwiftUI
 
 public struct PocketnestSDK {
+    /**
+     - Returns: A SwiftUI view representing the Pocketnest web view.
+     */
     @MainActor public static func webView(
         url: String,
         redirectUri: String? = nil,
