@@ -4,9 +4,10 @@ import AuthenticationServices
 
 struct PocketnestWebView: UIViewRepresentable {
     let url: String
+    let accessToken: String?
     let redirectUri: String?
-    let onSuccess: ([String: Any]) -> Void
-    let onExit: () -> Void
+    let onSuccess: () -> Void?
+    let onExit: () -> Void?
 
     func makeCoordinator() -> Coordinator {
         Coordinator(baseURL: url, redirectUri: redirectUri, onSuccess: onSuccess, onExit: onExit)
@@ -46,7 +47,12 @@ struct PocketnestWebView: UIViewRepresentable {
 
         if var components = URLComponents(string: url) {
             var queryItems = components.queryItems ?? []
-            queryItems.append(URLQueryItem(name: "redirect_uri", value: redirectUri))
+            if (accessToken != nil && accessToken?.isEmpty == false) {
+                queryItems.append(URLQueryItem(name: "token", value: accessToken))
+            }
+            if (redirectUri != nil && redirectUri?.isEmpty == false) {
+                queryItems.append(URLQueryItem(name: "redirect_uri", value: redirectUri))
+            }
             components.queryItems = queryItems
             
             if let finalURL = components.url {
@@ -67,11 +73,11 @@ struct PocketnestWebView: UIViewRepresentable {
         weak var webView: WKWebView?
         let redirectUri: String?
         let baseURL: String!
-        let onSuccess: ([String: Any]) -> Void
-        let onExit: () -> Void
+        let onSuccess: () -> Void?
+        let onExit: () -> Void?
         var authSession: ASWebAuthenticationSession?
 
-        init(baseURL:String, redirectUri: String?, onSuccess: @escaping ([String: Any]) -> Void, onExit: @escaping () -> Void) {
+        init(baseURL:String, redirectUri: String?, onSuccess: @escaping () -> Void?, onExit: @escaping () -> Void?) {
             self.baseURL = baseURL;
             self.redirectUri = redirectUri
             self.onSuccess = onSuccess
@@ -81,11 +87,11 @@ struct PocketnestWebView: UIViewRepresentable {
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             switch message.name {
             case "onSuccess":
-                if let data = message.body as? [String: Any] {
-                    onSuccess(data)
-                }
+    
+                break;
             case "onExit":
-                onExit()
+                
+                break;
             case "native":
                 // Expect { type: "openHostedLink", url: "https://..." }
                 if let dict = message.body as? [String: Any],
@@ -137,7 +143,6 @@ struct PocketnestWebView: UIViewRepresentable {
                 ]
 
                 self.notifyWeb(status: "success", url: callbackURL.absoluteString, params: params)
-                self.onSuccess(payload)
             }
 
             session.prefersEphemeralWebBrowserSession = false

@@ -23,19 +23,12 @@ struct ContentView: View {
             .navigationTitle("PocketnestSDK Demo")
             .sheet(isPresented: $showingSDK) {
                 NavigationView {
-                    PocketnestSDK.webView(
+                    PocketnestSDK.webViewUI(
                         url: "https://pocketnest-preprod.netlify.app",
+                        accessToken: nil, //use token from you api to login user automatically
                         redirectUri: "pocketnestredirecturi",
-                        onSuccess: { payload in
-                            if let data = try? JSONSerialization.data(
-                                withJSONObject: payload,
-                                options: .prettyPrinted
-                            ),
-                               let string = String(data: data, encoding: .utf8) {
-                                resultText = "Success:\n\(string)"
-                            } else {
-                                resultText = "Success: \(payload)"
-                            }
+                        onSuccess: {
+                            resultText = "Success"
                         },
                         onExit: {
                             resultText = "User exited"

@@ -42,11 +42,21 @@ import PocketnestSDK
 
 let url = "YOUR_SSO_URL" // Example: https://mywebsite.com/sso provided by Pocketnest prod or preprod
 let redirectUri = "YOUR_REDIRECT_URI" // This value must exactly match the scheme registered in your Xcode project's URL Types (including case sensitivity) to avoid integration issues
+let accessToken = "YOUR_ACCESS_TOKEN" // Optional, if you want to user to be logged in automatically (session)
 
-PocketnestSDK.webView(url: url, redirectUri: redirectUri, onSuccess: { data in
-    // Handle success SDK started
+// SwiftUI version
+PocketnestSDK.webViewUI(url: url, accessToken:accessToken, redirectUri: redirectUri, onSuccess: { 
+    //Optional, Handle success SDK (webview) opened
 }, onExit: {
-    // Handle exit SDK
+    //Optional, Handle exit SDK (webview)
+})
+
+
+// UIKit version
+PocketnestSDK.webView(url: url, accessToken:accessToken, redirectUri: redirectUri, onSuccess: { 
+    //Optional, if you want to user to be logged in automatically (session)
+}, onExit: {
+    //Optional, Handle exit SDK (webview)
 })
 
 ```
