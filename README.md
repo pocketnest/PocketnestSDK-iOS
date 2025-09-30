@@ -54,7 +54,7 @@ PocketnestSDK.webViewUI(url: url, accessToken:accessToken, redirectUri: redirect
 
 // UIKit version
 PocketnestSDK.webView(url: url, accessToken:accessToken, redirectUri: redirectUri, onSuccess: { 
-    //Optional, if you want to user to be logged in automatically (session)
+    //Optional, Handle success SDK (webview) opened
 }, onExit: {
     //Optional, Handle exit SDK (webview)
 })
