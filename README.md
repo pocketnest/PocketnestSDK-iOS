@@ -1,6 +1,6 @@
 # PocketnestSDK
 
-![PocketnestSDK](https://img.shields.io/badge/PocketnestSDK-1.0.1-success)
+[![Latest Release](https://img.shields.io/github/v/release/pocketnest/PocketnestSDK-iOS?sort=semver)](https://github.com/pocketnest/PocketnestSDK-iOS/releases)
 
 iOS SDK for Pocketnest.
 
@@ -12,7 +12,7 @@ The [Swift Package Manager](https://swift.org/package-manager/) is a tool for au
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/pocketnest/PocketnestSDK-iOS.git", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://github.com/pocketnest/PocketnestSDK-iOS.git", from: "1.0.0")
 ]
 ```
 
@@ -21,7 +21,7 @@ dependencies: [
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate PocketnestSDK into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'PocketnestSDK', :git => 'https://github.com/pocketnest/PocketnestSDK-iOS.git', :tag => '1.0.1'
+pod 'PocketnestSDK', :git => 'https://github.com/pocketnest/PocketnestSDK-iOS.git'
 ```
 
 ## Usage
