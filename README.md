@@ -37,6 +37,8 @@ Here's official Apple documentation on how to register a custom URL scheme:
 https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app#Register-your-URL-scheme
 
 
+To get `url` and `accessToken` you need to check `Pocketnest SSO Partner Procedures` documentation.
+
 ```swift
 import PocketnestSDK
 
