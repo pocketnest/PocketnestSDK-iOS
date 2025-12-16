@@ -32,7 +32,6 @@ struct ContentView: View {
                         },
                         onExit: {
                             resultText = "User exited"
-                            showingSDK = false
                         }
                     )
                     .navigationBarTitle("Pocketnest", displayMode: .inline)
